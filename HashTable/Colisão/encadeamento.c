@@ -44,7 +44,7 @@ void exibir_todas(TabelaHash *tabela) {
     for (int i = 0; i < TAMANHO_HASH; i++) {
         Log *atual = tabela->tabela[i];
         while (atual != NULL) {
-            printf("Log ID: %d, timestamp: %d, IP: %d, Status da Requisição: %d, Tipo da Requisição: %s\n", atual -> id, atual -> timestamp, atual -> IP, atual -> statusRequisicao, atual -> tipoRequisicao);
+            printf("Log ID: %d, timestamp: %d, IP: %d, Status da Requisição: %d, Tipo da Requisição: %s (Índice: %d)\n", atual -> id, atual -> timestamp, atual -> IP, atual -> statusRequisicao, atual -> tipoRequisicao, i);
             atual = atual -> next;
         }
     }
