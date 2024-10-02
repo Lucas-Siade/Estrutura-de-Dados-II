@@ -131,8 +131,91 @@ void exibir_todas(TabelaHash *tabela) {
 }
 
 // Função de busca
+Log* buscarLinear(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);
+    int tentativas = 0;
+
+    while (tabela -> tabela[indice].ocupado && tentativas < TAMANHO_HASH) {
+        if (tabela -> tabela[indice].id == id) {
+            return &tabela -> tabela[indice];
+        }
+        
+        indice = (indice + 1) % TAMANHO_HASH;
+        tentativas++;
+    }
+
+    return NULL;
+}
+
+Log* buscarQuadratica(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);
+    int i = 1;
+    int tentativas = 0;
+
+    while (tabela -> tabela[indice].ocupado && tentativas < TAMANHO_HASH) {
+        if (tabela -> tabela[indice].id == id) {
+            return &tabela -> tabela[indice];
+        }
+        
+        indice = (funcao_hash(id) + i * i) % TAMANHO_HASH;
+        i++;
+        tentativas++;
+    }
+
+    return NULL;
+}
+
+Log* buscarDuploHashing(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);
+    int step = hash2(id);
+    int tentativas = 0;
+
+    while (tabela -> tabela[indice].ocupado && tentativas < TAMANHO_HASH) {
+        if (tabela -> tabela[indice].id == id) {
+            return &tabela -> tabela[indice];
+        }
+        
+        indice = (indice + step) % TAMANHO_HASH;
+        tentativas++;
+    }
+
+    return NULL;
+}
 
 // Função de exclusão
+void excluirLinear(TabelaHash *tabela, int id) {
+    Log *logA = buscarLinear(tabela, id);
+    
+    if (logA != NULL) {
+        logA -> ocupado = 0;
+        printf("Log com ID %d removido.\n", id);
+    } else {
+        printf("Log com ID %d não encontrado.\n", id);
+    }
+}
+
+void excluirQuadratica(TabelaHash *tabela, int id) {
+    Log *logA = buscarQuadratica(tabela, id);
+    
+    if (logA != NULL) {
+        logA -> ocupado = 0;
+        printf("Log com ID %d removido.\n", id);
+    } else {
+        printf("Log com ID %d não encontrado.\n", id);
+    }
+}
+
+void excluirDuploHashing(TabelaHash *tabela, int id) {
+    Log *logA = buscarDuploHashing(tabela, id);
+    
+    if (logA != NULL) {
+        logA -> ocupado = 0;
+        printf("Log com ID %d removido.\n", id);
+    } else {
+        printf("Log com ID %d não encontrado.\n", id);
+    }
+}
+
 
 
 int main() {
@@ -184,6 +267,20 @@ int main() {
     inserir_duplo_hashing(&tabela_duplo, criarLog(23, 1840, 172165173, 404, "GET"));
     inserir_duplo_hashing(&tabela_duplo, criarLog(26, 1900, 192168567, 401, "PUT"));
     
+    exibir_todas(&tabela_duplo);
+    
+    printf("\n");
+    excluirLinear(&tabela_linear, 0);
+    excluirQuadratica(&tabela_quadratica, 12);
+    excluirDuploHashing(&tabela_duplo, 10);
+    
+    printf("\nExclusão com Sondagem Linear:\n");
+    exibir_todas(&tabela_linear);
+    
+    printf("\nExclusão com Sondagem Quadrática:\n");
+    exibir_todas(&tabela_quadratica);
+    
+    printf("\nExclusão com Duplo Hashing:\n");
     exibir_todas(&tabela_duplo);
     
     return 0;
